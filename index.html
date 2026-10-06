@@ -168,7 +168,7 @@ if(big.length){
 }
 
 var rows=[['下一次聚會',c.next],['Instagram',c.ig],['LINE',c.line],['Email',c.email]].filter(function(r){return r[1]&&String(r[1]).trim();});
-h+='<section class="block" id="join" aria-labelledby="join-title"><h2 id="join-title">剛入學？從這裡開始</h2>';
+h+='<section class="block" id="join" aria-labelledby="join-title"><h2 id="join-title">剛入學的新朋友，從這裡開始</h2>';
 if((d.steps||[]).length) h+='<ol class="steps">'+d.steps.map(function(s){return '<li><div><b>'+esc(s.t)+'</b><span>'+esc(s.d)+'</span></div></li>';}).join('')+'</ol>';
 if(rows.length) h+='<div class="contact"><h3>聯絡我們</h3><dl>'+rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+contactVal(r[1])+'</dd>';}).join('')+'</dl></div>';
 h+='</section></main><footer>'+esc(d.footer)+'</footer></div>';
