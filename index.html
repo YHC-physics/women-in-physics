@@ -140,7 +140,7 @@ document.title=d.name;
 var paras=String(d.originText||'').split(/\n{2,}/).filter(function(p){return p.trim();}).map(function(p){return '<p>'+nl(p.trim())+'</p>';}).join('');
 var h='<div class="wrap"><header class="site-header"><a class="brand" href="#top">'+esc(d.name)+'</a><nav aria-label="頁面導覽"><a href="#origin">源起</a><a href="#events">聚會紀錄</a>'+(big.length?'<a href="#big">大型活動</a>':'')+'<a href="#join">加入</a></nav></header><main id="top">';
 
-h+='<section class="hero" aria-labelledby="hero-title"><div><h1 id="hero-title">'+nl(d.heroTitle)+'</h1><p class="lead">'+esc(d.heroLead)+'</p><div class="actions"><a class="btn primary" href="#join">認識我們，加入聚會</a><a class="btn ghost" href="#events">看最近的聚會</a></div></div><svg class="rings" id="rings" viewBox="0 0 600 420" role="img" aria-label="以同心圓表示：中心的一個點，一圈圈向外連到更多的人"></svg></section>';
+h+='<section class="hero" aria-labelledby="hero-title"><div><h1 id="hero-title">'+nl(d.heroTitle)+'</h1><p class="lead">'+esc(d.heroLead)+'</p><div class="actions"><a class="btn primary" href="#join">如何參加</a><a class="btn ghost" href="#events">最近的活動</a></div></div><svg class="rings" id="rings" viewBox="0 0 600 420" role="img" aria-label="以同心圓表示：中心的一個點，一圈圈向外連到更多的人"></svg></section>';
 
 h+='<section class="block" id="origin" aria-labelledby="origin-title"><div class="origin"><div><h2 id="origin-title">我們為什麼開始</h2><p class="pull">'+esc(d.originPull)+'</p></div><div class="prose">'+paras+'</div></div></section>';
 
