@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>物理系女生小聚</title>
+<meta name="description" content="物理系女生自發成立的小團體：認識彼此，遇到問題有人可以說說話。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F8FC;--surface:#FFFFFF;--ink:#12324A;--muted:#4A6B85;--line:#D3E4F0;
+  --accent:#0B78AE;--accent-ink:#FFFFFF;--accent2:#5CC3E8;--ring:#B9D7EA;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0E1F2E;--surface:#152B3F;--ink:#E8F3FA;--muted:#9DB9CE;--line:#23425A;--accent:#5CC3E8;--accent-ink:#0E1F2E;--accent2:#5CC3E8;--ring:#2C5470}
+}
+html{scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:1rem;line-height:1.85;-webkit-text-size-adjust:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{width:100%;max-width:64rem;margin:0 auto;padding:0 1.25rem}
+.desc{white-space:pre-line}
+
+.site-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.5rem 1rem;padding:1.25rem 0}
+.brand{font-family:var(--serif);font-weight:700;font-size:1.1rem;letter-spacing:.06em;text-decoration:none}
+.site-header nav{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem;font-size:.95rem}
+.site-header nav a{text-decoration:none;color:var(--muted);padding:.25rem 0;border-bottom:2px solid transparent}
+.site-header nav a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+
+.hero{display:grid;gap:2rem;padding:2rem 0 3.5rem;align-items:center}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,8vw,3.9rem);line-height:1.3;letter-spacing:.04em;margin:0 0 1.25rem}
+.hero .lead{max-width:30em;margin:0 0 1.75rem;color:var(--muted);font-size:1.05rem;white-space:pre-line}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem}
+.btn{display:inline-block;padding:.7rem 1.4rem;border-radius:8px;text-decoration:none;font-weight:500;border:2px solid var(--accent);line-height:1.5}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.rings{width:100%;height:auto;display:block;overflow:visible}
+.rings circle{transform-box:fill-box;transform-origin:center}
+.rings .ring{fill:none;stroke:var(--ring);stroke-width:1.5;animation:ringIn .9s ease-out both}
+.rings .wave{fill:none;stroke:var(--accent2);stroke-width:2;vector-effect:non-scaling-stroke;opacity:0;animation:ripple 6s ease-out infinite}
+.rings .core{fill:var(--accent)}
+.rings .person{fill:var(--accent2);animation:pop .5s ease-out both}
+@keyframes ringIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes ripple{0%{opacity:.6;transform:scale(.12)}100%{opacity:0;transform:scale(1)}}
+@keyframes pop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){
+  .rings .ring,.rings .person{animation:none}
+  .rings .wave{display:none}
+}
+@media (min-width:860px){.hero{grid-template-columns:1.05fr 1fr;gap:3rem;padding:3rem 0 5rem}}
+
+.block{padding:3.5rem 0;border-top:1px solid var(--line)}
+.block h2{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,5vw,2.2rem);line-height:1.4;letter-spacing:.04em;margin:0 0 1.5rem}
+.prose{max-width:34em}
+.prose p{margin:0 0 1.15rem}
+.origin{display:grid;gap:2rem}
+.origin .pull{font-family:var(--serif);font-weight:600;font-size:1.35rem;line-height:1.7;border-left:4px solid var(--accent);padding-left:1.1rem;margin:0;max-width:20em}
+@media (min-width:860px){.origin{grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start}}
+
+.topics{list-style:none;margin:0;padding:0;display:grid;max-width:44rem}
+.topics li{padding:1rem 0;border-bottom:1px solid var(--line);display:grid;gap:.15rem}
+.topics li:first-child{border-top:1px solid var(--line)}
+.topics strong{font-family:var(--serif);font-size:1.1rem;letter-spacing:.03em}
+.topics span{color:var(--muted)}
+@media (min-width:720px){.topics li{grid-template-columns:11rem 1fr;gap:1.5rem;align-items:baseline}}
+
+.draft-note{display:inline-block;margin:0 0 2rem;padding:.5rem .9rem;border:1px dashed var(--muted);border-radius:6px;color:var(--muted);font-size:.9rem;line-height:1.6}
+.timeline{list-style:none;margin:0 0 0 .4rem;padding:0;border-left:2px solid var(--line);max-width:42rem}
+.timeline li{position:relative;padding:0 0 2.25rem 1.6rem}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:-.5rem;top:.55rem;width:.85rem;height:.85rem;border-radius:50%;background:var(--bg);border:2px solid var(--muted)}
+.timeline li:first-child::before{background:var(--accent);border-color:var(--accent)}
+.timeline time,.big time{font-size:.9rem;color:var(--muted);font-weight:500}
+.timeline .latest{color:var(--accent);margin-left:.6rem;font-size:.9rem;font-weight:500}
+.timeline h3,.big h3{font-family:var(--serif);font-size:1.25rem;line-height:1.5;letter-spacing:.03em;margin:.1rem 0 .35rem}
+.timeline p,.big p{margin:0;color:var(--muted)}
+.empty{color:var(--muted);margin:0}
+
+.ph{padding:0;border:0;background:var(--line);cursor:zoom-in;border-radius:8px;overflow:hidden;display:block;line-height:0}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.thumbs .ph{width:5.5rem;height:5.5rem}
+.big{max-width:56rem;margin:0 0 3rem}
+.big:last-child{margin-bottom:0}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:.6rem;margin-top:1rem}
+.wall .ph{aspect-ratio:4/3;width:100%}
+#lightbox{position:fixed;inset:0;z-index:60;background:rgba(10,14,30,.88);display:flex;align-items:center;justify-content:center;padding:1rem;cursor:zoom-out}
+#lightbox[hidden]{display:none}
+#lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+
+.steps{list-style:none;margin:0 0 2.5rem;padding:0;display:grid;gap:1.25rem;max-width:40rem;counter-reset:s}
+.steps li{display:grid;grid-template-columns:2.6rem 1fr;gap:.75rem;align-items:start;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--serif);font-weight:700;font-size:2rem;line-height:1.2;color:var(--accent)}
+.steps b{font-family:var(--serif);font-size:1.1rem;display:block;letter-spacing:.03em}
+.steps span{color:var(--muted);white-space:pre-line}
+.contact{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.5rem 1.4rem;max-width:32rem}
+.contact h3{font-family:var(--serif);font-size:1.15rem;margin:0 0 .75rem}
+.contact dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.35rem 1.25rem}
+.contact dt{color:var(--muted)}
+.contact dd{margin:0;word-break:break-all}
+footer{padding:2.5rem 0 3rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div id="app"><noscript>請開啟瀏覽器的 JavaScript 以顯示網站內容。</noscript></div>
+<div id="lightbox" hidden></div>
+<script src="content.js"></script>
+<script>
+(function(){
+'use strict';
+var app=document.getElementById('app'), lb=document.getElementById('lightbox');
+var d=window.SITE;
+if(!d){app.textContent='找不到 content.js，請確認檔案有一起上傳。';return;}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function nl(s){return esc(s).replace(/\n/g,'<br>');}
+function isUrl(s){return /^https?:\/\/\S+$/.test(s);}
+function isMail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
+function contactVal(v){
+  v=String(v||'').trim();
+  if(isUrl(v)) return '<a href="'+esc(v)+'" rel="noopener">'+esc(v)+'</a>';
+  if(isMail(v)) return '<a href="mailto:'+esc(v)+'">'+esc(v)+'</a>';
+  return esc(v);
+}
+function thumbs(list,cls,alt){
+  if(!list||!list.length) return '';
+  return '<div class="'+cls+'">'+list.map(function(s){
+    return '<button type="button" class="ph" aria-label="放大照片"><img src="'+esc(s)+'" alt="'+esc(alt)+'" loading="lazy" decoding="async"></button>';
+  }).join('')+'</div>';
+}
+
+var ev=(d.events||[]).slice(0,7), big=d.bigEvents||[], c=d.contact||{};
+document.title=d.name;
+var paras=String(d.originText||'').split(/\n{2,}/).filter(function(p){return p.trim();}).map(function(p){return '<p>'+nl(p.trim())+'</p>';}).join('');
+var h='<div class="wrap"><header class="site-header"><a class="brand" href="#top">'+esc(d.name)+'</a><nav aria-label="頁面導覽"><a href="#origin">源起</a><a href="#events">聚會紀錄</a>'+(big.length?'<a href="#big">大型活動</a>':'')+'<a href="#join">加入</a></nav></header><main id="top">';
+
+h+='<section class="hero" aria-labelledby="hero-title"><div><h1 id="hero-title">'+nl(d.heroTitle)+'</h1><p class="lead">'+esc(d.heroLead)+'</p><div class="actions"><a class="btn primary" href="#join">認識我們，加入聚會</a><a class="btn ghost" href="#events">看最近的聚會</a></div></div><svg class="rings" id="rings" viewBox="0 0 600 420" role="img" aria-label="以同心圓表示：中心的一個點，一圈圈向外連到更多的人"></svg></section>';
+
+h+='<section class="block" id="origin" aria-labelledby="origin-title"><div class="origin"><div><h2 id="origin-title">我們為什麼開始</h2><p class="pull">'+esc(d.originPull)+'</p></div><div class="prose">'+paras+'</div></div></section>';
+
+if((d.topics||[]).length){
+  h+='<section class="block" aria-labelledby="topics-title"><h2 id="topics-title">在這裡可以聊什麼</h2><ul class="topics">'+d.topics.map(function(t){return '<li><strong>'+esc(t.t)+'</strong><span>'+esc(t.d)+'</span></li>';}).join('')+'</ul></section>';
+}
+
+h+='<section class="block" id="events" aria-labelledby="events-title"><h2 id="events-title">最近'+(ev.length?' '+ev.length+' ':'')+'次聚會</h2>';
+if(d.eventsNote) h+='<p class="draft-note">'+esc(d.eventsNote)+'</p>';
+if(ev.length){
+  h+='<ol class="timeline">'+ev.map(function(e,i){
+    return '<li><time>'+esc(e.date)+'</time>'+(i===0?'<span class="latest">最近一次</span>':'')+'<h3>'+esc(e.title)+'</h3><p class="desc">'+esc(e.text)+'</p>'+thumbs(e.photos,'thumbs',e.title)+'</li>';
+  }).join('')+'</ol>';
+}else{
+  h+='<p class="empty">聚會紀錄即將更新。</p>';
+}
+h+='</section>';
+
+if(big.length){
+  h+='<section class="block" id="big" aria-labelledby="big-title"><h2 id="big-title">大型活動</h2>';
+  if(d.bigNote) h+='<p class="draft-note">'+esc(d.bigNote)+'</p>';
+  h+=big.map(function(e){
+    return '<article class="big"><time>'+esc(e.date)+'</time><h3>'+esc(e.title)+'</h3><p class="desc">'+esc(e.text)+'</p>'+thumbs(e.photos,'wall',e.title)+'</article>';
+  }).join('')+'</section>';
+}
+
+var rows=[['下一次聚會',c.next],['Instagram',c.ig],['LINE',c.line],['Email',c.email]].filter(function(r){return r[1]&&String(r[1]).trim();});
+h+='<section class="block" id="join" aria-labelledby="join-title"><h2 id="join-title">剛入學？從這裡開始</h2>';
+if((d.steps||[]).length) h+='<ol class="steps">'+d.steps.map(function(s){return '<li><div><b>'+esc(s.t)+'</b><span>'+esc(s.d)+'</span></div></li>';}).join('')+'</ol>';
+if(rows.length) h+='<div class="contact"><h3>聯絡我們</h3><dl>'+rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+contactVal(r[1])+'</dd>';}).join('')+'</dl></div>';
+h+='</section></main><footer>'+esc(d.footer)+'</footer></div>';
+app.innerHTML=h;
+
+/* 同心圓動畫 */
+(function(){
+  var svg=document.getElementById('rings'); if(!svg) return;
+  var NS='http://www.w3.org/2000/svg', cx=300, cy=210;
+  function el(name,attrs){var e=document.createElementNS(NS,name);for(var k in attrs)e.setAttribute(k,attrs[k]);return e;}
+  [45,90,135,180].forEach(function(r,i){
+    var c=el('circle',{cx:cx,cy:cy,r:r,'class':'ring'});
+    c.style.animationDelay=(i*0.15)+'s';
+    svg.appendChild(c);
+  });
+  [0,1,2].forEach(function(i){
+    var w=el('circle',{cx:cx,cy:cy,r:200,'class':'wave'});
+    w.style.animationDelay=(1.6+i*2)+'s';
+    svg.appendChild(w);
+  });
+  /* 每個小點是圈子裡的另一個人（半徑, 角度） */
+  [[45,200],[90,320],[90,100],[135,30],[135,250],[180,150],[180,290]].forEach(function(p,i){
+    var a=p[1]*Math.PI/180;
+    var d=el('circle',{cx:(cx+p[0]*Math.cos(a)).toFixed(1),cy:(cy+p[0]*Math.sin(a)).toFixed(1),r:6,'class':'person'});
+    d.style.animationDelay=(0.9+i*0.15)+'s';
+    svg.appendChild(d);
+  });
+  svg.appendChild(el('circle',{cx:cx,cy:cy,r:11,'class':'core'}));
+})();
+
+/* 放大照片 */
+app.addEventListener('click',function(e){
+  var t=e.target.closest?e.target.closest('.ph'):null; if(!t) return;
+  var im=t.querySelector('img'); if(!im) return;
+  lb.innerHTML='<img alt="" src="'+esc(im.getAttribute('src'))+'">'; lb.hidden=false;
+});
+lb.addEventListener('click',function(){lb.hidden=true;lb.innerHTML='';});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden){lb.hidden=true;lb.innerHTML='';}});
+})();
+</script>
+</body>
+</html>

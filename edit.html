@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>編輯網站內容</title>
+<style>
+:root{
+  --bg:#F2F8FC;--surface:#FFFFFF;--ink:#12324A;--muted:#4A6B85;--line:#D3E4F0;
+  --accent:#0B78AE;--accent-ink:#FFFFFF;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0E1F2E;--surface:#152B3F;--ink:#E8F3FA;--muted:#9DB9CE;--line:#23425A;--accent:#5CC3E8;--accent-ink:#0E1F2E}
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:1rem;line-height:1.7;-webkit-text-size-adjust:100%}
+.wrap{max-width:44rem;margin:0 auto;padding:1.25rem 1rem 5rem}
+h1{font-family:var(--serif);font-size:1.6rem;margin:.5rem 0 .75rem}
+h2{font-family:var(--serif);font-size:1.25rem;margin:2.25rem 0 .75rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+.help{font-size:.9rem;color:var(--muted);margin:0 0 1rem}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem;margin:0 0 1rem}
+.msg{padding:.6rem .8rem;border-radius:8px;background:var(--surface);border:1px solid var(--line);font-size:.95rem;margin:0 0 1rem}
+.fl{display:block;margin:0 0 .9rem}
+.fl>span{display:block;font-size:.9rem;color:var(--muted);margin-bottom:.25rem;line-height:1.5}
+input[type=text],textarea{
+  width:100%;font:inherit;font-size:1rem;line-height:1.6;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);border-radius:8px;padding:.6rem .7rem;
+}
+textarea{resize:vertical}
+.item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+button,.btn{font:inherit;cursor:pointer}
+.mini{font-size:.9rem;padding:.4rem .8rem;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.mini.danger{color:var(--accent);border-color:var(--accent)}
+.btn{display:inline-block;padding:.65rem 1.3rem;border-radius:8px;border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:500;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;margin:.6rem 0}
+.dl{display:block;margin:.35rem 0}
+code{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:0 .3rem;font-size:.9em}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="content.js"></script>
+<script>
+(function(){
+'use strict';
+var root=document.getElementById('root');
+var DRAFT_KEY='physics-women-site-draft';
+var DEFAULT={name:'',heroTitle:'',heroLead:'',originPull:'',originText:'',topics:[],eventsNote:'',events:[],bigNote:'',bigEvents:[],steps:[],contact:{next:'',ig:'',line:'',email:''},footer:''};
+
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function normalize(o){
+  var w=Object.assign(clone(DEFAULT),clone(o||{}));
+  ['topics','events','bigEvents','steps'].forEach(function(k){if(!Array.isArray(w[k]))w[k]=[];});
+  w.contact=Object.assign({next:'',ig:'',line:'',email:''},w.contact||{});
+  ['events','bigEvents'].forEach(function(k){w[k].forEach(function(e){if(!Array.isArray(e.photos))e.photos=[];});});
+  return w;
+}
+var W=normalize(window.SITE);
+var OUT='', RS={prefix:'',items:[],busy:false}, DRAFT=null, timer=null;
+
+try{var raw=localStorage.getItem(DRAFT_KEY); if(raw) DRAFT=JSON.parse(raw);}catch(e){}
+function saveDraft(){
+  clearTimeout(timer);
+  timer=setTimeout(function(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(W));}catch(e){}},500);
+}
+
+function setPath(obj,path,val){var p=path.split('.');for(var i=0;i<p.length-1;i++)obj=obj[p[i]];obj[p[p.length-1]]=val;}
+function fld(label,path,val,area,rows,lines){
+  var ctl=area
+    ? '<textarea data-path="'+path+'"'+(lines?' data-lines="1"':'')+' rows="'+(rows||3)+'">'+esc(val)+'</textarea>'
+    : '<input type="text" data-path="'+path+'" value="'+esc(val)+'">';
+  return '<label class="fl"><span>'+label+'</span>'+ctl+'</label>';
+}
+function listEditor(key,name,fields,withPhotos){
+  var h='';
+  W[key].forEach(function(it,i){
+    h+='<div class="box"><div class="item-head"><b>'+name+' '+(i+1)+'</b><button type="button" class="mini danger" data-act="del" data-key="'+key+'" data-i="'+i+'">刪除</button></div>';
+    fields.forEach(function(f){h+=fld(f.label,key+'.'+i+'.'+f.k,it[f.k],f.area,f.rows);});
+    if(withPhotos) h+=fld('照片（一行一個檔案路徑，例如 photos/2026-09-tea-1.jpg）',key+'.'+i+'.photos',(it.photos||[]).join('\n'),true,3,true);
+    h+='</div>';
+  });
+  h+='<button type="button" class="mini" data-act="add" data-key="'+key+'">＋ 新增'+name+'</button>';
+  return h;
+}
+
+function render(){
+  var y=window.scrollY;
+  var evFields=[{k:'date',label:'日期（例如 9 月 12 日）'},{k:'title',label:'名稱'},{k:'text',label:'內容',area:true,rows:3}];
+  var h='<h1>編輯網站內容</h1>';
+  h+='<p class="help">在這裡填好內容，最後按下方「產生 content.js」，再把產生的內容貼到 GitHub 的 <code>content.js</code> 存檔，網站就會更新。這個頁面本身不會改動網站。</p>';
+  if(DRAFT) h+='<div class="msg">偵測到這個瀏覽器有上次沒完成的草稿。<div class="row"><button type="button" class="mini" data-act="loaddraft">載入草稿</button><button type="button" class="mini" data-act="dropdraft">捨棄草稿</button></div></div>';
+
+  h+='<h2>基本資料</h2>'+fld('團體名稱','name',W.name)+fld('首頁大標題（可換行）','heroTitle',W.heroTitle,true,2)+fld('首頁簡介','heroLead',W.heroLead,true,3);
+  h+='<h2>源起</h2>'+fld('一句話標語','originPull',W.originPull)+fld('源起說明（段落之間空一行）','originText',W.originText,true,9);
+  h+='<h2>在這裡可以聊什麼</h2>'+listEditor('topics','項目',[{k:'t',label:'標題'},{k:'d',label:'說明',area:true,rows:2}],false);
+  h+='<h2>聚會紀錄</h2><p class="help">網站只會顯示最新的 7 筆，新增的會排在最前面。</p>'+fld('提醒文字（不需要就清空）','eventsNote',W.eventsNote)+listEditor('events','聚會',evFields,true);
+  h+='<h2>大型活動</h2><p class="help">像有老師參加的茶會，適合放多張照片。沒有活動時，這一區不會顯示。</p>'+fld('提醒文字（不需要就清空）','bigNote',W.bigNote)+listEditor('bigEvents','活動',evFields,true);
+  h+='<h2>新生怎麼加入</h2>'+listEditor('steps','步驟',[{k:'t',label:'標題'},{k:'d',label:'說明',area:true,rows:2}],false);
+  h+='<h2>聯絡方式</h2>'+fld('下一次聚會','contact.next',W.contact.next)+fld('Instagram','contact.ig',W.contact.ig)+fld('LINE（可貼連結）','contact.line',W.contact.line)+fld('Email','contact.email',W.contact.email);
+  h+='<h2>頁尾</h2>'+fld('頁尾文字','footer',W.footer);
+
+  h+='<h2>縮圖小工具</h2><p class="help">手機照片通常很大，會讓網站變慢。先在這裡縮小，下載後再上傳到 GitHub 的 <code>photos</code> 資料夾。</p>';
+  h+='<div class="box"><label class="fl"><span>檔名開頭（英文或數字，例如 2026-09-tea）</span><input type="text" data-rs="prefix" value="'+esc(RS.prefix)+'"></label>';
+  h+='<label class="fl"><span>選擇照片（可多選）</span><input type="file" accept="image/*" multiple data-rs="files"></label>';
+  if(RS.busy) h+='<p class="help">處理中…</p>';
+  if(RS.items.length){
+    h+=RS.items.map(function(it){return '<a class="dl" href="'+it.url+'" download="'+esc(it.name)+'">下載 '+esc(it.name)+'（'+it.kb+' KB）</a>';}).join('');
+    h+='<label class="fl" style="margin-top:.9rem"><span>上傳後，把這幾行貼到活動的「照片」欄</span><textarea rows="'+Math.min(6,RS.items.length+1)+'" readonly>'+esc(RS.items.map(function(it){return 'photos/'+it.name;}).join('\n'))+'</textarea></label>';
+  }
+  h+='</div>';
+
+  h+='<h2>完成：產生 content.js</h2><div class="row"><button type="button" class="btn" data-act="gen">產生 content.js</button></div>';
+  if(OUT){
+    h+='<textarea id="outText" rows="10" readonly>'+esc(OUT)+'</textarea><div class="row"><button type="button" class="btn" data-act="copy">複製全部</button><button type="button" class="btn ghost" data-act="download">下載 content.js</button></div><p class="msg" id="msg">下一步：到 GitHub 開啟 content.js，按鉛筆圖示，全選後貼上，再按 Commit changes。約一、兩分鐘後網站就會更新。</p>';
+  }
+  root.innerHTML=h;
+  window.scrollTo(0,y);
+}
+
+function cleaned(){
+  var c=clone(W);
+  ['events','bigEvents'].forEach(function(k){c[k].forEach(function(e){e.photos=(e.photos||[]).map(function(x){return String(x).trim();}).filter(Boolean);});});
+  return c;
+}
+function say(t){var m=document.getElementById('msg'); if(m) m.textContent=t;}
+function copyText(t){
+  if(navigator.clipboard&&navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+  var ta=document.getElementById('outText'); ta.focus(); ta.select();
+  return document.execCommand('copy')?Promise.resolve():Promise.reject();
+}
+
+function toBlob(file,max,q){
+  return new Promise(function(res,rej){
+    var img=new Image(), url=URL.createObjectURL(file);
+    img.onload=function(){
+      var w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,max/Math.max(w,h));
+      var c=document.createElement('canvas'); c.width=Math.max(1,Math.round(w*s)); c.height=Math.max(1,Math.round(h*s));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(function(b){b?res(b):rej(new Error('blob'));},'image/jpeg',q);
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);rej(new Error('img'));};
+    img.src=url;
+  });
+}
+async function resizeAll(files){
+  var list=Array.prototype.slice.call(files||[]); if(!list.length) return;
+  var prefix=(RS.prefix||'photo').replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'photo';
+  RS.busy=true; RS.items=[]; render();
+  for(var k=0;k<list.length;k++){
+    try{
+      var b=await toBlob(list[k],1280,0.8);
+      RS.items.push({name:prefix+'-'+(k+1)+'.jpg',url:URL.createObjectURL(b),kb:Math.round(b.size/1024)});
+    }catch(e){}
+  }
+  RS.busy=false; render();
+}
+
+root.addEventListener('input',function(e){
+  var t=e.target, p=t.getAttribute&&t.getAttribute('data-path');
+  if(p){
+    var v=t.value;
+    if(t.hasAttribute('data-lines')) v=v.split('\n').map(function(x){return x.trim();}).filter(Boolean);
+    setPath(W,p,v); saveDraft(); return;
+  }
+  if(t.getAttribute&&t.getAttribute('data-rs')==='prefix') RS.prefix=t.value;
+});
+root.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.getAttribute&&t.getAttribute('data-rs')==='files') resizeAll(t.files);
+});
+root.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-act]'); if(!b) return;
+  var act=b.getAttribute('data-act'), key=b.getAttribute('data-key'), i=+b.getAttribute('data-i');
+  if(act==='add'){
+    if(key==='topics'||key==='steps') W[key].push({t:'',d:''});
+    else W[key].unshift({date:'',title:'',text:'',photos:[]});
+    OUT=''; saveDraft(); render();
+  }else if(act==='del'){W[key].splice(i,1);OUT='';saveDraft();render();}
+  else if(act==='loaddraft'){W=normalize(DRAFT);DRAFT=null;OUT='';render();}
+  else if(act==='dropdraft'){DRAFT=null;try{localStorage.removeItem(DRAFT_KEY);}catch(e){}render();}
+  else if(act==='gen'){
+    OUT='window.SITE = '+JSON.stringify(cleaned(),null,2)+';\n'; render();
+    var o=document.getElementById('outText'); if(o) o.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  else if(act==='copy'){copyText(OUT).then(function(){say('已複製。到 GitHub 的 content.js 貼上，再按 Commit changes。');},function(){say('複製失敗，請長按上方文字框，選擇全選後複製。');});}
+  else if(act==='download'){
+    var blob=new Blob([OUT],{type:'text/javascript'}), a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='content.js'; document.body.appendChild(a); a.click(); a.remove();
+  }
+});
+render();
+})();
+</script>
+</body>
+</html>
